@@ -297,19 +297,6 @@ i3() {
     my_install i3 i3status feh dmenu rofi compton i3lock
 }
 
-register_module spotify "music streaming" --ask
-spotify() {
-    color green "Installing spotify..."
-    my_install spotify
-}
-
-VIRTUALIZATION_PACKAGES="qemu wine playonlinux dosbox mednafen stella"
-register_module virtualization "$VIRTUALIZATION_PACKAGES" --ask
-virtualization() {
-    color green "Installing $VIRTUALIZATION..."
-    my_install $VIRTUALIZATION_PACKAGES
-}
-
 register_module clear_bloat "programs to find extraneous files" --ask
 clear_bloat() {
     color green "Installing ..."
@@ -398,6 +385,13 @@ virtualbox(){
     color green "Downloading virtualbox.."
     wget "$VIRTUALBOX_URL" || error "Error downloading virtualbox"
     dpkg -i `basename "$VIRTUALBOX_URL"` || error "Error installing virtualbox"
+}
+
+VIRTUALIZATION_PACKAGES="qemu wine playonlinux dosbox mednafen stella"
+register_module virtualization "$VIRTUALIZATION_PACKAGES" --ask
+virtualization() {
+    color green "Installing $VIRTUALIZATION..."
+    my_install $VIRTUALIZATION_PACKAGES
 }
 
 #http://jes.st/2015/compiling-playing-nethack-360-on-ubuntu/
