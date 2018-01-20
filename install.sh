@@ -105,15 +105,10 @@ Enter y or n.";;
   echo
 }
 
-#settings for apt-get to automatically answer yes
-my_apt-get(){
-  #DEBIAN_FRONTEND disables interactive mode
-  DEBIAN_FRONTEND=noninteractive apt-get --yes --force-yes $@
-}
-
 #manage the errors of apt-get install
 my_install(){
-  my_apt-get install $@ || error "Error installing $@"
+  #DEBIAN_FRONTEND disables interactive mode
+  DEBIAN_FRONTEND=noninteractive apt-get --yes --force-yes install $@ || error "Error installing $@"
 }
 
 #manage the errors of cp
@@ -288,7 +283,7 @@ install_modules(){
 register_module basic "basic packages" --ask
 basic() {
     color green "Installing basic packages.."
-    my_install vlc git xautomation devede sqliteman python-pip python3-pip winff mencoder alien checkinstall gpaco meld gparted testdisk smartmontools gsmartcontrol gnome-multi-writer clonezilla conky htop deluge w3m keepassx wipe pwgen pv tmux zsh ncdu powertop powerstat wcalc hardinfo xclip fortune-mod gtkhash i7z 
+    my_install vlc git xautomation devede sqliteman python-pip python3-pip winff mencoder alien checkinstall gpaco meld gparted testdisk smartmontools gsmartcontrol gnome-multi-writer clonezilla conky htop deluge w3m keepassx wipe pwgen pv tmux zsh ncdu powertop powerstat wcalc hardinfo xclip fortune-mod gtkhash i7z timeshift catfish
 }
 
 register_module i3 "tiling window manger" --ask
@@ -333,7 +328,7 @@ Bible() {
     my_install xiphos
 }
 
-register_module bacakgrounds "extra bacakgrounds for Linux Mint" --ask
+register_module backgrounds "extra backgrounds for Linux Mint" --ask
 backgrounds() {
     color green "Installing ..."
     my_install mint-backgrounds-maya mint-backgrounds-nadia mint-backgrounds-olivia \
@@ -607,6 +602,6 @@ else
     color yellow "You are NOT connected to the internet."
 fi
 
-sudo my_apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get --yes --force-yes update
 #go through each module and run it if it is not done/skipped
 install_modules
