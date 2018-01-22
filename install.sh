@@ -5,6 +5,7 @@ CHROME_URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
 ANDROID_STUDIO_URL="https://dl.google.com/dl/android/studio/ide-zips/3.0.1.0/android-studio-ide-171.4443003-linux.zip"
 #ARDUINO_URL="https://www.arduino.cc/download_handler.php?f=/arduino-1.8.5-linux64.tar.xz"
 VIRTUALBOX_URL="https://download.virtualbox.org/virtualbox/5.2.6/virtualbox-5.2_5.2.6-120293~Ubuntu~xenial_amd64.deb"
+MULTIBOOTUSB_URL="https://github.com/mbusb/multibootusb/releases/download/v9.1.0/python3-multibootusb_9.1.0-1_all.deb"
 NETHACK_FILE="nethack-360-src.tgz"
 NETHACK_DIR="nethack-3.6.0"
 
@@ -348,6 +349,15 @@ emacs(){
     my_install emacs
 }
 
+register_module multibootusb "app that puts multiple bootable iso's on 1 USB drive" --ask
+multibootusb(){
+    MULTIBOOTUSB_FILE=`basename "$MULTIBOOTUSB_URL"`
+    test -f "$MULTIBOOTUSB_FILE" && mv "$MULTIBOOTUSB_FILE" "${MULTIBOOTUSB_FILE}.old"
+    color green "Downloading multibootusb.."
+    wget "$MULTIBOOTUSB_URL" || error "Error downloading multibootusb"
+    dpkg -i "$MULTIBOOTUSB_FILE" || error "Error installing multibootusb"
+}
+
 register_module backgrounds "extra backgrounds for Linux Mint" --ask
 backgrounds() {
     color green "Installing ..."
@@ -373,6 +383,7 @@ oh-my-zsh() {
     my_install zsh
     color green "Installing oh-my-zsh..."
     sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | grep -v 'env zsh')" || error "Error installing oh-my-zsh"
+    my_chown "$USER_HOME/.zshrc" "$USER_HOME/.zsh-update"
 }
 
 register_module eclipse "ide for java and other languages" --ask
