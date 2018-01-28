@@ -298,7 +298,14 @@ apt_update() {
 register_module basic "basic packages" --ask
 basic() {
     color green "Installing basic packages.."
-    my_install vlc git xautomation devede sqliteman python-pip python3-pip winff mencoder alien checkinstall gpaco meld gparted testdisk smartmontools gsmartcontrol gnome-multi-writer clonezilla conky htop deluge w3m keepassx wipe pwgen pv tmux zsh ncdu powertop powerstat wcalc hardinfo xclip fortune-mod gtkhash i7z timeshift catfish gnome-system-monitor
+    my_install vlc git xautomation devede sqliteman python-pip python3-pip winff mencoder alien checkinstall gpaco meld gparted testdisk smartmontools gsmartcontrol gnome-multi-writer clonezilla conky htop deluge w3m keepassx wipe pwgen pv tmux zsh ncdu powertop powerstat wcalc hardinfo xclip fortune-mod gtkhash i7z catfish gnome-system-monitor
+}
+
+register_module timeshift "backup and restore the system" --ask
+timeshift(){
+    add-apt-repository ppa:teejee2008/ppa -y
+    apt_update
+    my_install timeshift
 }
 
 register_module i3 "tiling window manger" --ask
