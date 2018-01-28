@@ -334,8 +334,8 @@ science() {
 
 register_module cad "computer aided design" --ask
 cad() {
-    color green "Installing blender freecad eagle..."
-    my_install blender freecad eagle
+    color green "Installing blender freecad..."
+    my_install blender freecad
 }
 
 register_module pdf "tools to manipulate pdf files" --ask
@@ -362,7 +362,7 @@ multibootusb(){
     test -f "$MULTIBOOTUSB_FILE" && mv "$MULTIBOOTUSB_FILE" "${MULTIBOOTUSB_FILE}.old"
     color green "Downloading multibootusb.."
     wget "$MULTIBOOTUSB_URL" || error "Error downloading multibootusb"
-    dpkg -i "$MULTIBOOTUSB_FILE" || error "Error installing multibootusb"
+    dpkg -i "$MULTIBOOTUSB_FILE" || sudo apt-get -fy install || error "Error installing multibootusb"
 }
 
 register_module backgrounds "extra backgrounds for Linux Mint" --ask
@@ -390,7 +390,7 @@ oh-my-zsh() {
     my_install zsh
     color green "Installing oh-my-zsh..."
     sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | grep -v 'env zsh')" || error "Error installing oh-my-zsh"
-    my_chown "$USER_HOME/.zshrc" "$USER_HOME/.zsh-update"
+    my_chown -R "$USER_HOME/.zshrc" "$USER_HOME/.oh-my-zsh"
 }
 
 register_module eclipse "ide for java and other languages" --ask
@@ -419,11 +419,11 @@ virtualbox(){
     test -f "$VIRTUALBOX_FILE" && mv "$VIRTUALBOX_FILE" "${VIRTUALBOX_FILE}.old"
     color green "Downloading virtualbox.."
     wget "$VIRTUALBOX_URL" || error "Error downloading virtualbox"
-    dpkg -i "$VIRTUALBOX_FILE" || error "Error installing virtualbox"
+    dpkg -i "$VIRTUALBOX_FILE" || sudo apt-get -fy install || error "Error installing virtualbox"
     usermod -a -G vboxusers "$USER_NAME" || error "Error adding user to group 'vboxusers' to enable USB support"
 }
 
-VIRTUALIZATION_PACKAGES="qemu wine playonlinux dosbox mednafen stella"
+VIRTUALIZATION_PACKAGES="qemu wine-development playonlinux dosbox mednafen stella"
 register_module virtualization "$VIRTUALIZATION_PACKAGES" --ask
 virtualization() {
     color green "Installing $VIRTUALIZATION..."
@@ -550,6 +550,8 @@ arduino_ide(){
     mv "$ARDUINO_DIR" "$USER_HOME/Apps" || error "Error moving arduino to $USER_HOME/Apps"
     my_chown -R "$USER_HOME/Apps"
     color green "Creating desktop launcher.."
+    mkdir -p "$USER_HOME/.local/share/applications"
+    my_chown "$USER_HOME/.local/share/applications"
     LAUNCHER="$USER_HOME/.local/share/applications/arduino.desktop"
     cat <<EOF > "$LAUNCHER"
 [Desktop Entry]
@@ -580,6 +582,8 @@ android_studio(){
         color green "Installing Android Studio.."
         unzip `basename "$ANDROID_STUDIO_URL" | sed 's/.zip$//'` -d /opt || error "Error unzipping android studio"
         color green "Creating desktop launcher.."
+        mkdir -p "$USER_HOME/.local/share/applications"
+        my_chown "$USER_HOME/.local/share/applications"
         LAUNCHER="$USER_HOME/.local/share/applications/androidstudio.desktop"
         cat <<EOF > "$LAUNCHER"
 [Desktop Entry]
