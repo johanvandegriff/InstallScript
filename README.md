@@ -33,6 +33,8 @@ The script lets you choose which modules you want to install, and if you want on
 # Tested Distros
 * Linux Mint
 * Linux Lite
+* Xubuntu
+* ElementaryOS
 
 Feel free to test it on other system and let me know if it works!
 

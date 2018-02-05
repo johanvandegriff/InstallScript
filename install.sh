@@ -303,7 +303,9 @@ basic() {
 
 register_module timeshift "backup and restore the system" --ask
 timeshift(){
-    add-apt-repository ppa:teejee2008/ppa -y
+    add-apt-repository -y ppa:teejee2008/ppa || \
+    echo "deb http://ppa.launchpad.net/teejee2008/ppa/ubuntu xenial main
+deb-src http://ppa.launchpad.net/teejee2008/ppa/ubuntu xenial main" > /etc/apt/sources.list.d/teejee2008-ppa-xenial.list || error "Error adding ppa repository"
     apt_update
     my_install timeshift
 }
@@ -378,7 +380,9 @@ backgrounds() {
 register_module cool-retro-term "retro terminal emulator" --ask
 cool-retro-term() {
     color green "adding repositories"
-    add-apt-repository -y ppa:noobslab/apps || error "Error adding ppa repository"
+    add-apt-repository -y ppa:noobslab/apps || \
+    echo "deb http://ppa.launchpad.net/noobslab/apps/ubuntu xenial main
+deb-src http://ppa.launchpad.net/noobslab/apps/ubuntu xenial main" > /etc/apt/sources.list.d/noobslab-apps-xenial.list || error "Error adding ppa repository"
     apt-get update || error "Error with apt-get update"
     color green "Installing cool-retro-term..."
     my_install cool-retro-term qml-module-qt-labs-folderlistmodel qml-module-qt-labs-settings
