@@ -239,7 +239,7 @@ install_modules(){
     if [[ ! -f "$SKIP" ]]
     then
         > "$SKIP"
-	my_chown "$SKIP"
+	my_chown "$SKIP" || error "Error changing ownership of $SKIP"
         for module in $ASK
         do
             yes_or_no "Install module \"$module\" (${desc[$module]})?"
@@ -394,7 +394,7 @@ oh-my-zsh() {
     my_install zsh
     color green "Installing oh-my-zsh..."
     sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | grep -v 'env zsh')" || error "Error installing oh-my-zsh"
-    my_chown -R "$USER_HOME/.zshrc" "$USER_HOME/.oh-my-zsh"
+    my_chown -R "$USER_HOME/.zshrc" "$USER_HOME/.oh-my-zsh" || error "Error changing ownership of zsh files."
 }
 
 register_module eclipse "ide for java and other languages" --ask
@@ -552,24 +552,24 @@ arduino_ide(){
     fi
     color green "Moving arduino to $USER_HOME/Apps.."
     mv "$ARDUINO_DIR" "$USER_HOME/Apps" || error "Error moving arduino to $USER_HOME/Apps"
-    my_chown -R "$USER_HOME/Apps"
+    my_chown -R "$USER_HOME/Apps" || error "Error changing ownership of $USER_HOME/Apps"
     color green "Creating desktop launcher.."
     mkdir -p "$USER_HOME/.local/share/applications"
-    my_chown "$USER_HOME/.local/share/applications"
+    my_chown "$USER_HOME/.local/share/applications" || error "Error changing ownership of $USER_HOME/.local/share/applications"
     LAUNCHER="$USER_HOME/.local/share/applications/arduino.desktop"
     cat <<EOF > "$LAUNCHER"
 [Desktop Entry]
 Version=1.0
 Type=Application
 Name=Arduino
+Terminal=false
 Exec=$USER_HOME/Apps/$ARDUINO_DIR/arduino
 Icon=$USER_HOME/Apps/$ARDUINO_DIR/lib/arduino_icon.ico
 Categories=Development;IDE;
-Terminal=false
 StartupNotify=true
 StartupWMClass=arduino
 EOF
-    my_chown "$LAUNCHER"
+    my_chown "$LAUNCHER" || error "Error changing ownership of $LAUNCHER"
 }
 
 register_module android_studio "(version 3.0.1) editor for android apps" --ask
@@ -587,21 +587,21 @@ android_studio(){
         unzip `basename "$ANDROID_STUDIO_URL" | sed 's/.zip$//'` -d /opt || error "Error unzipping android studio"
         color green "Creating desktop launcher.."
         mkdir -p "$USER_HOME/.local/share/applications"
-        my_chown "$USER_HOME/.local/share/applications"
+        my_chown "$USER_HOME/.local/share/applications" || error "Error changing ownership of $USER_HOME/.local/share/applications"
         LAUNCHER="$USER_HOME/.local/share/applications/androidstudio.desktop"
         cat <<EOF > "$LAUNCHER"
 [Desktop Entry]
 Version=1.0
 Type=Application
 Name=Android Studio
+Terminal=false
 Exec="/opt/android-studio/bin/studio.sh" %f
 Icon=/opt/android-studio/bin/studio.png
 Categories=Development;IDE;
-Terminal=false
 StartupNotify=true
 StartupWMClass=android-studio
 EOF
-        my_chown "$LAUNCHER"
+        my_chown "$LAUNCHER" || error "Error changing ownership of $LAUNCHER"
     fi
 }
 
@@ -646,7 +646,7 @@ then
 fi
 
 CURRENT_DIR=$(readlink -f $(dirname "$0")) #absolute path to the dir the script is in
-USER_NAME=`who | awk '{print $1}'`
+USER_NAME=`who | awk '{print $1}' | head -1`
 USER_HOME=`eval echo ~$SUDO_USER` #the home dir of the user who ran this script with sudo
 USER_BIN="$USER_HOME"/bin/ #the user's ~/bin directory
 PROFILE="$USER_HOME"/.profile #the user's .profile file
@@ -667,7 +667,7 @@ DONE=done.txt #the file that contains which modules are done
 if [[ ! -f "$DONE" ]]
 then
     > "$DONE"
-    my_chown "$DONE"
+    my_chown "$DONE" || error "Error changing ownership of $DONE"
 fi
 
 #test the internet
