@@ -352,7 +352,7 @@ Bible() {
     my_install xiphos
 }
 
-register_module emacs "complex text editor with keyboard shortcuts"
+register_module emacs "complex text editor with keyboard shortcuts" --ask
 emacs(){
     color green "Installing emacs..."
     my_install emacs
