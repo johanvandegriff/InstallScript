@@ -298,7 +298,7 @@ apt_update() {
 register_module basic "basic packages" --ask
 basic() {
     color green "Installing basic packages.."
-    my_install vlc git xautomation devede sqliteman python-pip python3-pip winff mencoder alien checkinstall gpaco meld gparted testdisk smartmontools gsmartcontrol gnome-multi-writer clonezilla conky htop deluge w3m keepassx wipe pwgen pv tmux zsh ncdu powertop powerstat wcalc hardinfo xclip fortune-mod gtkhash i7z catfish gnome-system-monitor
+    my_install vlc git xautomation devede python3-pip winff mencoder alien checkinstall gpaco meld gparted testdisk smartmontools gsmartcontrol gnome-multi-writer clonezilla conky htop deluge w3m keepassx wipe pwgen pv tmux zsh ncdu powertop powerstat wcalc hardinfo xclip fortune-mod gtkhash i7z catfish gnome-system-monitor
 }
 
 register_module timeshift "backup and restore the system" --ask
@@ -319,7 +319,7 @@ i3() {
 register_module clear_bloat "programs to find extraneous files" --ask
 clear_bloat() {
     color green "Installing ..."
-    my_install gtkorphan bleachbit fslint fdupes packagesearch
+    my_install bleachbit fdupes packagesearch
 }
 
 register_module games "supertux (platformer) and supertuxkart (racing)" --ask
@@ -346,10 +346,10 @@ pdf() {
     my_install scribus pdfshuffler pdfmod pdfsam pdfchain pdftk pdfcrack pdfgrep
 }
 
-register_module Bible "xiphos Bible database" --ask
+register_module Bible "BibleTime" --ask
 Bible() {
-    color green "Installing xiphos..."
-    my_install xiphos
+    color green "Installing BibleTime..."
+    my_install bibletime
 }
 
 register_module emacs "complex text editor with keyboard shortcuts" --ask
@@ -374,34 +374,35 @@ backgrounds() {
     mint-backgrounds-petra mint-backgrounds-qiana mint-backgrounds-rafaela \
     mint-backgrounds-rebecca mint-backgrounds-retro mint-backgrounds-rosa \
     mint-backgrounds-sarah mint-backgrounds-serena mint-backgrounds-sonya \
-    mint-backgrounds-sylvia mint-backgrounds-xfce
+    mint-backgrounds-sylvia
 }
 
-register_module cool-retro-term "retro terminal emulator" --ask
-cool-retro-term() {
-    color green "adding repositories"
-    add-apt-repository -y ppa:noobslab/apps || \
-    echo "deb http://ppa.launchpad.net/noobslab/apps/ubuntu xenial main
-deb-src http://ppa.launchpad.net/noobslab/apps/ubuntu xenial main" > /etc/apt/sources.list.d/noobslab-apps-xenial.list || error "Error adding ppa repository"
-    apt-get update || error "Error with apt-get update"
-    color green "Installing cool-retro-term..."
-    my_install cool-retro-term qml-module-qt-labs-folderlistmodel qml-module-qt-labs-settings
-}
+#register_module cool-retro-term "retro terminal emulator" --ask
+#cool-retro-term() {
+#    color green "adding repositories"
+#    add-apt-repository -y ppa:noobslab/apps || \
+#    echo "deb http://ppa.launchpad.net/noobslab/apps/ubuntu xenial main
+#deb-src http://ppa.launchpad.net/noobslab/apps/ubuntu xenial main" > /etc/apt/sources.list.d/noobslab-apps-xenial.list || error "Error adding ppa repository"
+#    apt-get update || error "Error with apt-get update"
+#    color green "Installing cool-retro-term..."
+#    my_install cool-retro-term qml-module-qt-labs-folderlistmodel qml-module-qt-labs-settings
+#}
 
 register_module oh-my-zsh "themes and fancy options manager for zsh" --ask
 oh-my-zsh() {
     color green "Installing zsh..."
     my_install zsh
     color green "Installing oh-my-zsh..."
-    sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | grep -v 'env zsh')" || error "Error installing oh-my-zsh"
+    sudo -u "$USER_NAME" sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O - | grep -v 'env zsh') --unattended" || error "Error installing oh-my-zsh"
+    sudo chsh "$USER_NAME" -s `which zsh`
     my_chown -R "$USER_HOME/.zshrc" "$USER_HOME/.oh-my-zsh" || error "Error changing ownership of zsh files."
 }
 
-register_module eclipse "ide for java and other languages" --ask
-eclipse() {
-    color green "Installing eclipse.."
-    my_install eclipse
-}
+#register_module eclipse "ide for java and other languages" --ask
+#eclipse() {
+#    color green "Installing eclipse.."
+#    my_install eclipse
+#}
 
 EDITING_PACKAGES="audacity lmms kdenlive openshot kazam inkscape kolourpaint"
 register_module editing "$EDITING_PACKAGES" --ask
@@ -424,6 +425,7 @@ virtualbox(){
     color green "Downloading virtualbox.."
     wget "$VIRTUALBOX_URL" || error "Error downloading virtualbox"
     dpkg -i "$VIRTUALBOX_FILE" || sudo apt-get -fy install || error "Error installing virtualbox"
+    groupadd vboxusers || warning "vboxusers already exists"
     usermod -a -G vboxusers "$USER_NAME" || error "Error adding user to group 'vboxusers' to enable USB support"
 }
 
